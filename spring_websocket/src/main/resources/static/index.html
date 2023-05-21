@@ -5,26 +5,9 @@
     <title>WebSocket Chat</title>
 </head>
 <body>
+<input type="text" id="name" placeholder="이름을 입력하세요">
 <input type="text" id="messageInput" placeholder="메시지를 입력하세요">
 <ul id="messageList"></ul>
-
-<script>
-        const socket = new WebSocket("ws://localhost:8080/chat"); // 서버의 WebSocket 엔드포인트에 연결합니다.
-
-        socket.onmessage = function(event) {
-            const message = event.data;
-            const listItem = document.createElement("li");
-            listItem.textContent = message;
-            document.getElementById("messageList").appendChild(listItem);
-        };
-
-        document.getElementById("messageInput").addEventListener("keydown", function(event) {
-            if (event.key === "Enter") {
-                const message = event.target.value;
-                socket.send(message); // 입력된 메시지를 서버로 전송합니다.
-                event.target.value = "";
-            }
-        });
-    </script>
+<script src="/script/websocket.js"></script>
 </body>
 </html>
