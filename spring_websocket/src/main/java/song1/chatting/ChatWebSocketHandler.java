@@ -6,6 +6,7 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 import song1.chatting.domain.ChatData;
+import song1.chatting.repository.ChatRepository;
 
 import java.io.IOException;
 import java.util.HashSet;
@@ -15,6 +16,12 @@ import java.util.Set;
 public class ChatWebSocketHandler extends TextWebSocketHandler {
     private Set<WebSocketSession> sessions = new HashSet<>();
     private ObjectMapper objectMapper = new ObjectMapper();
+    private ChatRepository chatRepository;
+
+    public ChatWebSocketHandler(ChatRepository chatRepository) {
+        this.chatRepository = chatRepository;
+    }
+
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
         sessions.add(session);
@@ -25,7 +32,7 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
         String payload = message.getPayload();
         ChatData chatData = objectMapper.readValue(payload, ChatData.class);
         log.info("수신: {}", chatData);
-
+        chatRepository.save(chatData);
         broadcast(payload); // 모든 세션에 메시지 브로드캐스트
     }
 
